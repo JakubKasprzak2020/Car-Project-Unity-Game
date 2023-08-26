@@ -5,26 +5,30 @@ using UnityEngine;
 
 public class GameManagerScript : MonoBehaviour
 {
-    [SerializeField] float speed = 0.15f;
-    private float accelerationForEachLevel = 0.025f;
+    public GameObject player;
     public GameObject spawnManager;
     private SpawnManagerScript spawnManagerScript;
     private int level = 1;
-    private int levelSize = 10;
+    private int levelSize = 5;
+    [SerializeField] float speed;
+    private float accelerationForEachLevel = 0.015f; //0.025 was too dificult
+    private float beginingSpeed = 0.15f;
 
     // Start is called before the first frame update
     void Start()
     {
+        speed = beginingSpeed;
         spawnManagerScript = spawnManager.GetComponent<SpawnManagerScript>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        changeLevelAndSpeed();
+        ChangeLevelAndSpeed();
+        StopGameOnPlayerFailure();
     }
 
-    void changeLevelAndSpeed()
+    void ChangeLevelAndSpeed()
     {
         int obstacleCounter = spawnManagerScript.SpawnCounter;
         if (obstacleCounter == level * levelSize)
@@ -34,8 +38,22 @@ public class GameManagerScript : MonoBehaviour
         }
     }
 
+    void StopGameOnPlayerFailure()
+    {
+        if (!player.activeInHierarchy)
+        {
+            speed = 0;
+        }
+    }
+
     public float Speed
     {
         get { return speed; }
     }
+
+    public int Level
+    {
+        get { return level; }
+    }
+
 }
