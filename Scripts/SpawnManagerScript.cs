@@ -11,8 +11,8 @@ public class SpawnManagerScript : MonoBehaviour
     public List<GameObject> verticalObstacles;
     public List<GameObject> longObstacles;
     private System.Random rnd = new System.Random();
-    private float startDelay = 2;
-    private float repeatRate = 1.5f;
+    private float startDelay = 3; //2 was too fast
+    private float repeatRate = 2.2f; //1.5 for abstract prototype, 2.8 too boring
     private int spawnCounter = 0;
     private int lastLevel = 1;
 
@@ -129,8 +129,10 @@ public class SpawnManagerScript : MonoBehaviour
 
     void calculateRepeatRate()
     {
-        float factorForOneAndHalfSecondAtStart = 0.225f;
-        repeatRate = factorForOneAndHalfSecondAtStart / gameManagerScript.Speed;
+        //float factorForOneAndHalfSecondAtStart = 0.225f;
+        //float factorFor2point8SecondsAtStart = 0.42f;
+        float factorFor2point2SecondsAtStart = 0.33f;
+        repeatRate = factorFor2point2SecondsAtStart / gameManagerScript.Speed;
     }
 
     void accelerateSpawning()

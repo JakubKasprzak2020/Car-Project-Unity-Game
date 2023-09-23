@@ -7,8 +7,13 @@ public class PlayerScript : MonoBehaviour
     private Vector3 startPosition = new Vector3(0, 0.5f, -4);
     private Vector3 vec;
     public float speed = 0.6f;
+    private int lifes = 3;
+    private int lifesOnLastUpdate = 3;
     float border = 4.5f;
+    float recoveryTime = 1;
     private bool isImmortal = false;
+    private bool isInRecoveryTime = false;
+    private bool isDestroyed = false;
 
 
     // Start is called before the first frame update
@@ -22,6 +27,9 @@ public class PlayerScript : MonoBehaviour
     {
         PlayerMovement();
         CheckBorders();
+        ProtectFromLoosingMoreThanOneLifeAtTime();
+        DestroyWhenNoLifes();
+        OverturnIfDestroyed();
     }
 
     void PutOnStartPosition()
@@ -32,11 +40,14 @@ public class PlayerScript : MonoBehaviour
 
     void PlayerMovement()
     {
-        vec = transform.position;
-        vec.x += Input.GetAxis("Horizontal") * Time.deltaTime * 20 * speed;
-        vec.z += Input.GetAxis("Vertical") * Time.deltaTime * 20 * speed;
-        transform.position = vec;
-        changeImmortalityForTesting();
+        if (!isDestroyed)
+        {
+            vec = transform.position;
+            vec.x += Input.GetAxis("Horizontal") * Time.deltaTime * 20 * speed;
+            vec.z += Input.GetAxis("Vertical") * Time.deltaTime * 20 * speed;
+            transform.position = vec;
+            ChangeImmortalityForTesting();
+        }
     }
 
     void CheckBorders()
@@ -86,7 +97,7 @@ public class PlayerScript : MonoBehaviour
         }
     }
 
-    void changeImmortalityForTesting()
+    void ChangeImmortalityForTesting()
     {
         if (Input.GetKeyDown("space"))
         {
@@ -95,14 +106,76 @@ public class PlayerScript : MonoBehaviour
     }
     private void OnTriggerEnter(Collider other)
     {
-        if (!isImmortal)
+        if (!isInRecoveryTime)
         {
-            gameObject.SetActive(false);
+            lifes--;
+            if (lifes < 0)
+            {
+                lifes = 0;
+            }
+            Explode();
+            StartCoroutine(StartRecoveryTime());
         }
+    }
+
+    private void DestroyWhenNoLifes()
+    {
+        if (!isImmortal && lifes < 1)
+        {
+            //gameObject.SetActive(false);
+            isDestroyed = true;
+        }
+    }
+
+    private void ProtectFromLoosingMoreThanOneLifeAtTime()
+    {
+        if (lifesOnLastUpdate > lifes)
+        {
+            lifes = lifesOnLastUpdate - 1;
+        }
+        lifesOnLastUpdate = lifes;
     }
 
     public bool IsImmortal
     {
         get { return isImmortal; }
+    }
+
+    private void Explode()
+    {
+        transform.GetChild(4).GetComponent<ExplosionScript>().Explode();
+    }
+
+    private void Burn()
+    {
+        transform.GetChild(4).GetComponent<ExplosionScript>().Burn();
+    }
+
+    public int Lifes
+    {
+        get { return lifes; }
+    }
+
+    public bool IsDestroyed
+    {
+        get { return isDestroyed; }
+    }
+
+    IEnumerator StartRecoveryTime()
+    { 
+        isInRecoveryTime = true;
+        yield return new WaitForSeconds(recoveryTime);
+        isInRecoveryTime = false;
+    }
+
+    private void OverturnIfDestroyed()
+    {
+        if (isDestroyed && transform.localEulerAngles.x < 180)
+        {
+            transform.Rotate(5.0f, 0.0f, 0.0f, Space.World);
+        } else if (isDestroyed)
+        {
+            Burn();
+        }
     }
 }

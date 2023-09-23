@@ -8,6 +8,7 @@ public class GameManagerScript : MonoBehaviour
     public GameObject player;
     public GameObject spawnManager;
     private SpawnManagerScript spawnManagerScript;
+    private PlayerScript playerScript;
     private int level = 1;
     private int levelSize = 5;
     [SerializeField] float speed;
@@ -19,6 +20,7 @@ public class GameManagerScript : MonoBehaviour
     {
         speed = beginingSpeed;
         spawnManagerScript = spawnManager.GetComponent<SpawnManagerScript>();
+        playerScript = player.GetComponent<PlayerScript>();
     }
 
     // Update is called once per frame
@@ -40,7 +42,7 @@ public class GameManagerScript : MonoBehaviour
 
     void StopGameOnPlayerFailure()
     {
-        if (!player.activeInHierarchy)
+        if (playerScript.IsDestroyed)
         {
             speed = 0;
         }

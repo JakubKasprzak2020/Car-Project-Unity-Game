@@ -9,6 +9,7 @@ public class GameInfoScript : MonoBehaviour
     [SerializeField] GameObject spawnManager;
     [SerializeField] GameObject player;
     [SerializeField] TextMeshProUGUI pointsInfo;
+    [SerializeField] TextMeshProUGUI lifesInfo;
     [SerializeField] TextMeshProUGUI immortalityInfo;
     private SpawnManagerScript spawnManagerScript;
     private PlayerScript playerScript;
@@ -24,6 +25,7 @@ public class GameInfoScript : MonoBehaviour
     void Update()
     {
         UpdatePointsInfo();
+        UpdateLifesInfo();
         UpdateImmortalityInfo();
     }
 
@@ -31,6 +33,12 @@ public class GameInfoScript : MonoBehaviour
     {
         int points = spawnManagerScript.SpawnCounter;
         pointsInfo.text = "Points: " + points;
+    }
+
+    void UpdateLifesInfo()
+    {
+        int lifes = playerScript.Lifes;
+        lifesInfo.text = "Lifes: " + lifes;
     }
     void UpdateImmortalityInfo()
     {
