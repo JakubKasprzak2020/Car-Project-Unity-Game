@@ -7,8 +7,8 @@ public class PlayerScript : MonoBehaviour
     private Vector3 startPosition = new Vector3(0, 0.5f, -4);
     private Vector3 vec;
     public float speed = 0.6f;
-    private int lifes = 3;
-    private int lifesOnLastUpdate = 3;
+    private int lifes = 5;
+    private int lifesOnLastUpdate = 5;
     float border = 4.5f;
     float recoveryTime = 1;
     private bool isImmortal = false;

@@ -20,6 +20,7 @@ public class MenuScript : MonoBehaviour
 
     public void PlayGame()
     {
-        SceneManager.LoadScene("With Graphic");
+        //SceneManager.LoadScene("With Graphic");
+        SceneManager.LoadScene("Intro");
     }
 }
