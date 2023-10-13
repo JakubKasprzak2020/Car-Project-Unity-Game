@@ -10,11 +10,15 @@ public class SpawnManagerScript : MonoBehaviour
     public List<GameObject> obstaclesInPlay;
     public List<GameObject> verticalObstacles;
     public List<GameObject> longObstacles;
+    public List<GameObject> powerUps;
     private System.Random rnd = new System.Random();
     private float startDelay = 3; //2 was too fast
     private float repeatRate = 2.2f; //1.5 for abstract prototype, 2.8 too boring
     private int spawnCounter = 0;
     private int lastLevel = 1;
+    private int noPowerUpBeginingLimit = 20;
+    private int howManyObstaclesForPowerUp = 10;
+    private int endOfSpawiningLimit = 75;
 
     // Start is called before the first frame update
     void Start()
@@ -33,10 +37,14 @@ public class SpawnManagerScript : MonoBehaviour
 
     void Spawn()
     {
-        if (gameManagerScript.Speed > 0)
+        if (gameManagerScript.Speed > 0 && spawnCounter < endOfSpawiningLimit)
         {
             addObstacleOnLevel();
-            if (gameManagerScript.Level < 5) //5
+            if (ShouldSpawnPowerUp())
+            {
+                SpawnPowerUp();
+            }
+            else if (gameManagerScript.Level < 5) //5
             {
                 SpawnObstacle();
             }
@@ -105,7 +113,19 @@ public class SpawnManagerScript : MonoBehaviour
         GameObject obstacle = GetRandomObstacle(longObstacles);
         Vector3 spawnPosition = new Vector3(obstacle.transform.position.x, 0, 6);
         Instantiate(obstacle, spawnPosition, obstacle.transform.rotation);
+    }
 
+    bool ShouldSpawnPowerUp()
+    {
+        return spawnCounter > noPowerUpBeginingLimit && spawnCounter % howManyObstaclesForPowerUp == 0;
+    }
+
+    void SpawnPowerUp()
+    {
+        GameObject powerUp = GetRandomObstacle(powerUps);
+        int vectorX = rnd.Next(-3, 3);
+        Vector3 spawnPosition = new Vector3(vectorX, 0.5f, 6);
+        Instantiate(powerUp, spawnPosition, powerUp.transform.rotation);
     }
 
     GameObject GetRandomObstacle(List<GameObject> objects)

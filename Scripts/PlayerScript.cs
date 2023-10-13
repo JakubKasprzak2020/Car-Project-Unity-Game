@@ -106,7 +106,13 @@ public class PlayerScript : MonoBehaviour
     }
     private void OnTriggerEnter(Collider other)
     {
-        if (!isInRecoveryTime)
+        if (other.gameObject.tag == "Extra Life")
+        {
+            lifes++;
+            RunFireworks();
+            Destroy(other.gameObject);
+        }
+        else if (!isInRecoveryTime)
         {
             lifes--;
             if (lifes < 0)
@@ -144,6 +150,11 @@ public class PlayerScript : MonoBehaviour
     private void Explode()
     {
         transform.GetChild(4).GetComponent<ExplosionScript>().Explode();
+    }
+
+    private void RunFireworks()
+    {
+        transform.GetChild(5).GetComponent<FireWorksScript>().RunFireworks();
     }
 
     private void Burn()
