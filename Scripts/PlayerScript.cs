@@ -14,6 +14,7 @@ public class PlayerScript : MonoBehaviour
     private bool isImmortal = false;
     private bool isInRecoveryTime = false;
     private bool isDestroyed = false;
+    private bool gameIsOver = false;
 
 
     // Start is called before the first frame update
@@ -40,7 +41,7 @@ public class PlayerScript : MonoBehaviour
 
     void PlayerMovement()
     {
-        if (!isDestroyed)
+        if (!isDestroyed && !gameIsOver)
         {
             vec = transform.position;
             vec.x += Input.GetAxis("Horizontal") * Time.deltaTime * 20 * speed;
@@ -188,5 +189,10 @@ public class PlayerScript : MonoBehaviour
         {
             Burn();
         }
+    }
+
+    public void SetGameIsOver()
+    {
+        gameIsOver = true;
     }
 }

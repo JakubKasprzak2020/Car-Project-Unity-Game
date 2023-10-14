@@ -11,14 +11,16 @@ public class SpawnManagerScript : MonoBehaviour
     public List<GameObject> verticalObstacles;
     public List<GameObject> longObstacles;
     public List<GameObject> powerUps;
+    public GameObject boss;
     private System.Random rnd = new System.Random();
     private float startDelay = 3; //2 was too fast
-    private float repeatRate = 2.2f; //1.5 for abstract prototype, 2.8 too boring
+    private float repeatRate = 2.2f; //1.5 for abstract prototype, 2.8 bit boring, 2.2 quite chalanging
     private int spawnCounter = 0;
     private int lastLevel = 1;
-    private int noPowerUpBeginingLimit = 20;
-    private int howManyObstaclesForPowerUp = 10;
-    private int endOfSpawiningLimit = 75;
+    private int noPowerUpBeginingLimit = 9; // 20 - try with 9 now
+    private int howManyObstaclesForPowerUp = 9; //10  - try with 9 now
+    private int endOfSpawiningLimit = 100; //100
+    private bool bossWasSpawned = false;
 
     // Start is called before the first frame update
     void Start()
@@ -27,6 +29,7 @@ public class SpawnManagerScript : MonoBehaviour
         obstaclesInPlay.Add(obstacles[0]);
         gameManagerScript = gameManager.GetComponent<GameManagerScript>();
         InvokeRepeating("Spawn", startDelay, repeatRate);
+        //InvokeRepeating("FinalSpawn", startDelay, repeatRate); //for testing final
     }
 
     // Update is called once per frame
@@ -44,7 +47,7 @@ public class SpawnManagerScript : MonoBehaviour
             {
                 SpawnPowerUp();
             }
-            else if (gameManagerScript.Level < 5) //5
+            if (gameManagerScript.Level < 5) //5
             {
                 SpawnObstacle();
             }
@@ -52,11 +55,24 @@ public class SpawnManagerScript : MonoBehaviour
             {
                 SpawnWithVertical();
             }
-            else
+            else if (gameManagerScript.Level < 15) // 15
             {
                 spawnWithVertivalAndLong();
             }
+            else
+            {
+                FinalSpawn();
+            }
             spawnCounter++;
+            if (spawnCounter > endOfSpawiningLimit)
+            {
+                spawnCounter = endOfSpawiningLimit;
+            }
+        }
+        if (spawnCounter == endOfSpawiningLimit && !bossWasSpawned)
+        {
+            bossWasSpawned = true;
+            StartCoroutine(SpawnBoss());
         }
     }
 
@@ -124,7 +140,7 @@ public class SpawnManagerScript : MonoBehaviour
     {
         GameObject powerUp = GetRandomObstacle(powerUps);
         int vectorX = rnd.Next(-3, 3);
-        Vector3 spawnPosition = new Vector3(vectorX, 0.5f, 6);
+        Vector3 spawnPosition = new Vector3(vectorX, 0.5f, 8.5f);
         Instantiate(powerUp, spawnPosition, powerUp.transform.rotation);
     }
 
@@ -160,6 +176,107 @@ public class SpawnManagerScript : MonoBehaviour
         calculateRepeatRate();
         CancelInvoke();
         InvokeRepeating("Spawn", repeatRate, repeatRate);
+    }
+
+    void FinalSpawn()
+    {
+        int randomChoice = rnd.Next(0, 6);
+
+        switch (randomChoice)
+        {
+            case 0:
+                SpawnDiagonal1();
+                break;
+
+            case 1:
+                SpawnDiagonal2();
+                break;
+            case 2:
+                SpawnLeftRightDynamic();
+                break;
+            case 3:
+                SpawnCenterDynamic();
+                break;
+            case 4:
+                SpawnManyVerticalLeft();
+                break;
+            case 5:
+                SpawnManyVerticalRight();
+                break;
+        }
+    }
+
+    void SpawnDiagonal1()
+    {
+        GameObject obstacle = obstaclesInPlay[0];
+        Vector3 spawnPosition1 = new Vector3(-3, 0, 6);
+        Vector3 spawnPosition2 = new Vector3(-2, 0, 7);
+        Vector3 spawnPosition3 = new Vector3(-1, 0, 8);
+        Instantiate(obstacle, spawnPosition1, obstacle.transform.rotation);
+        Instantiate(obstacle, spawnPosition2, obstacle.transform.rotation);
+        Instantiate(obstacle, spawnPosition3, obstacle.transform.rotation);
+    }
+
+    void SpawnDiagonal2()
+    {
+        GameObject obstacle = obstaclesInPlay[0];
+        Vector3 spawnPosition1 = new Vector3(3, 0, 6);
+        Vector3 spawnPosition2 = new Vector3(2, 0, 7);
+        Vector3 spawnPosition3 = new Vector3(1, 0, 8);
+        Instantiate(obstacle, spawnPosition1, obstacle.transform.rotation);
+        Instantiate(obstacle, spawnPosition2, obstacle.transform.rotation);
+        Instantiate(obstacle, spawnPosition3, obstacle.transform.rotation);
+    }
+
+    void SpawnLeftRightDynamic()
+    {
+        GameObject obstacle = obstacles[3];
+        Vector3 spawnPosition1 = new Vector3(2.5f, 0, 6);
+        Vector3 spawnPosition2 = new Vector3(-2.5f, 0, 6);
+        Instantiate(obstacle, spawnPosition1, obstacle.transform.rotation);
+        Instantiate(obstacle, spawnPosition2, obstacle.transform.rotation);
+    }
+    
+    void SpawnCenterDynamic()
+    {
+        GameObject obstacle = obstacles[2];
+        Vector3 spawnPosition1 = new Vector3(0, 0, 6);
+        Vector3 spawnPosition2 = new Vector3(-1.5f, 0, 10);
+        Vector3 spawnPosition3 = new Vector3(1.5f, 0, 10);
+        //Vector3 spawnPosition4 = new Vector3(0, 0, 11);
+        Instantiate(obstacle, spawnPosition1, obstacle.transform.rotation);
+        Instantiate(obstacle, spawnPosition2, obstacle.transform.rotation);
+        Instantiate(obstacle, spawnPosition3, obstacle.transform.rotation);
+        //Instantiate(obstacle, spawnPosition4, obstacle.transform.rotation);
+    }
+
+    void SpawnManyVerticalLeft()
+    {
+        GameObject obstacle = verticalObstacles[0];
+        Vector3 spawnPosition1 = new Vector3(-5, 0, 9);
+        Vector3 spawnPosition2 = new Vector3(-8, 0, 9);
+        Vector3 spawnPosition3 = new Vector3(-11, 0, 9);
+        Instantiate(obstacle, spawnPosition1, obstacle.transform.rotation);
+        Instantiate(obstacle, spawnPosition2, obstacle.transform.rotation);
+        Instantiate(obstacle, spawnPosition3, obstacle.transform.rotation);
+    }
+
+    void SpawnManyVerticalRight()
+    {
+        GameObject obstacle = verticalObstacles[1];
+        Vector3 spawnPosition1 = new Vector3(5, 0, 9);
+        Vector3 spawnPosition2 = new Vector3(8, 0, 9);
+        Vector3 spawnPosition3 = new Vector3(11, 0, 9);
+        Instantiate(obstacle, spawnPosition1, obstacle.transform.rotation);
+        Instantiate(obstacle, spawnPosition2, obstacle.transform.rotation);
+        Instantiate(obstacle, spawnPosition3, obstacle.transform.rotation);
+    }
+
+    IEnumerator SpawnBoss()
+    {
+        yield return new WaitForSeconds(10);
+        Vector3 spawnPosition = new Vector3(0, 0, 6);
+        Instantiate(boss, spawnPosition, boss.transform.rotation);
     }
 
     public int SpawnCounter

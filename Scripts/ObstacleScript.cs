@@ -12,7 +12,7 @@ public class ObstacleScript : MonoBehaviour
     public bool isFrontDynamic = false;
     public bool isVerticalDynamic = false;
     public bool isMovingLeftRight = false;
-    private float border = -6;
+    private float border = -12;
 
     // Start is called before the first frame update
     void Start()
