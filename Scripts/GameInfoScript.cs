@@ -11,12 +11,15 @@ public class GameInfoScript : MonoBehaviour
     [SerializeField] TextMeshProUGUI pointsInfo;
     [SerializeField] TextMeshProUGUI lifesInfo;
     [SerializeField] TextMeshProUGUI immortalityInfo;
+    [SerializeField] TextMeshProUGUI mainInfo;
     private SpawnManagerScript spawnManagerScript;
     private PlayerScript playerScript;
+    bool isMainInfoShown = false;
 
     // Start is called before the first frame update
     void Start()
     {
+        mainInfo.text = "";
         spawnManagerScript = spawnManager.GetComponent<SpawnManagerScript>();
         playerScript = player.GetComponent<PlayerScript>();
     }
@@ -49,5 +52,22 @@ public class GameInfoScript : MonoBehaviour
         {
             immortalityInfo.text = "";
         }
+    }
+
+    public void ShowMainInfoWithText(string text)
+    {
+        if (!isMainInfoShown)
+        {
+            isMainInfoShown = true;
+            mainInfo.text = text;
+            StartCoroutine(HideInfoText());
+            isMainInfoShown = false;
+        }
+    }
+
+    IEnumerator HideInfoText()
+    {
+        yield return new WaitForSeconds(2);
+        mainInfo.text = "";
     }
 }

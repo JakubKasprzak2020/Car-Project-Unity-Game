@@ -74,6 +74,7 @@ public class SpawnManagerScript : MonoBehaviour
             bossWasSpawned = true;
             StartCoroutine(SpawnBoss());
         }
+        gameManagerScript.SetHasJustStartedToFalse();
     }
 
     void spawnWithVertivalAndLong()
@@ -282,5 +283,21 @@ public class SpawnManagerScript : MonoBehaviour
     public int SpawnCounter
     {
         get { return spawnCounter; }
+    }
+
+    public void ContinueWithSpawnCounterAndLastLevel(int spawnCounter, int lastLevel)
+    {
+        this.spawnCounter = spawnCounter;
+        this.lastLevel = lastLevel;
+        bossWasSpawned = false;
+        StopCoroutine("SpawnBoss");
+        obstaclesInPlay = new List<GameObject>();
+        for (int i = 0; i < lastLevel; i++)
+        {
+            if (obstacles.Count > i)
+            {
+                obstaclesInPlay.Add(obstacles[i]);
+            }
+        }
     }
 }

@@ -23,4 +23,10 @@ public class MenuScript : MonoBehaviour
         //SceneManager.LoadScene("With Graphic");
         SceneManager.LoadScene("Intro");
     }
+
+    public void BackToMenu()
+    {
+        SceneManager.LoadScene("Menu");
+    }
+
 }

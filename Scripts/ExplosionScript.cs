@@ -26,4 +26,9 @@ public class ExplosionScript : MonoBehaviour
     {
         fire.SetActive(true);
     }
+
+    public void StopBurning()
+    {
+        fire.SetActive(false);
+    }
 }

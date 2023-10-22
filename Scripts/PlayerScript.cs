@@ -6,9 +6,11 @@ public class PlayerScript : MonoBehaviour
 {
     private Vector3 startPosition = new Vector3(0, 0.5f, -4);
     private Vector3 vec;
+    private ExplosionScript explosionScript;
     public float speed = 0.6f;
-    private int lifes = 5;
-    private int lifesOnLastUpdate = 5;
+    private int beginingNumberOfLifes = 5;
+    private int lifes;
+    private int lifesOnLastUpdate;
     float border = 4.5f;
     float recoveryTime = 1;
     private bool isImmortal = false;
@@ -20,6 +22,7 @@ public class PlayerScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        explosionScript = transform.GetChild(4).GetComponent<ExplosionScript>();
         PutOnStartPosition();
     }
 
@@ -33,10 +36,16 @@ public class PlayerScript : MonoBehaviour
         OverturnIfDestroyed();
     }
 
-    void PutOnStartPosition()
+    public void PutOnStartPosition()
     {
         gameObject.SetActive(true);
+        isDestroyed = false;
+        gameIsOver = false;
         transform.position = startPosition;
+        lifes = beginingNumberOfLifes;
+        lifesOnLastUpdate = beginingNumberOfLifes;
+        transform.rotation = new Quaternion(0, 0, 0, 0);
+        StopBurning();
     }
 
     void PlayerMovement()
@@ -160,7 +169,13 @@ public class PlayerScript : MonoBehaviour
 
     private void Burn()
     {
-        transform.GetChild(4).GetComponent<ExplosionScript>().Burn();
+        //transform.GetChild(4).GetComponent<ExplosionScript>().Burn();
+        explosionScript.Burn();
+    }
+
+    private void StopBurning()
+    {
+        explosionScript.StopBurning();
     }
 
     public int Lifes
