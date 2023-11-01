@@ -169,7 +169,7 @@ public class GameManagerScript : MonoBehaviour
     IEnumerator StartFinalAnimationAfterSeconds(int seconds)
     {
         yield return new WaitForSeconds(seconds);
-        SceneManager.LoadScene("Menu");
+        SceneManager.LoadScene("Outro");
     }
 
 }
