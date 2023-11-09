@@ -8,9 +8,10 @@ public class ObstacleScript : MonoBehaviour
     private GameManagerScript gameManagerScript;
     private float speed;
     private float speedForStatic;
+    private float speedBeforeItChangeToZero;
     public bool isStatic = true;
     public bool isFrontDynamic = false;
-    public bool isVerticalDynamic = false;
+    public bool isHorizontalDynamic = false;
     public bool isMovingLeftRight = false;
     private float border = -12;
 
@@ -19,13 +20,13 @@ public class ObstacleScript : MonoBehaviour
     {
         gameManager = GameObject.Find("GameManager");
         gameManagerScript = gameManager.GetComponent<GameManagerScript>();
-        checkSpeed();
+        CheckSpeed();
     }
 
     // Update is called once per frame
     void Update()
     {
-        checkSpeed();
+        CheckSpeed();
         Move();
         DestroyAfterBorder();
     }
@@ -34,34 +35,34 @@ public class ObstacleScript : MonoBehaviour
     {
         Vector3 vec = transform.position;
         vec.z -= Time.deltaTime * 20 * speed;
-        if(isVerticalDynamic && isMovingLeftRight)
+        if(isHorizontalDynamic && isMovingLeftRight)
         {
-            vec.x += Time.deltaTime * 20 * speed;
+            vec.x += Time.deltaTime * 20 * speedBeforeItChangeToZero;
         }
-        else if(isVerticalDynamic)
+        else if(isHorizontalDynamic)
         {
-            vec.x -= Time.deltaTime * 20 * speed;
+            vec.x -= Time.deltaTime * 20 * speedBeforeItChangeToZero;
         }
         transform.position = vec;
     }
 
     void DestroyAfterBorder()
     {
-        if (isObstacleOnBorder())
+        if (IsObstacleOnBorder())
         {
             Destroy(gameObject);
         }
     }
 
-    bool isObstacleOnBorder()
+    bool IsObstacleOnBorder()
     {
         return transform.position.z < border || transform.position.x < border || transform.position.x > -border;
     }
 
-    void checkSpeed()
+    void CheckSpeed()
     {
         speedForStatic = gameManagerScript.Speed;
-        if (isStatic || isVerticalDynamic)
+        if (isStatic || isHorizontalDynamic)
         {
             speed = speedForStatic;
         }
@@ -69,5 +70,10 @@ public class ObstacleScript : MonoBehaviour
         {
             speed = speedForStatic * 2;
         }
+        if (speed != 0)
+        {
+            speedBeforeItChangeToZero = speed;
+        }
     }
+
 }

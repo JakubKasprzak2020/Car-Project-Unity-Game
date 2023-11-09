@@ -24,10 +24,11 @@ public class OutroScript : MonoBehaviour
     bool isDriverMoveFinished = false;
     string fullText1 = "-Hi! I came to see Abigail.";
     string partialText1 = "";
-    string fullText2 = "-I'm sorry my son. She's not home. I hope that your road was good.";
+    string fullText2 = "-I'm sorry my son. She's not at home. I hope you had a good road.";
     string partialText2 = "";
     string fullText3 = "-Yeah, I saw a tank...";
     string partialText3 = "";
+    AudioSource audioSource;
 
     // Start is called before the first frame update
     void Start()
@@ -36,6 +37,8 @@ public class OutroScript : MonoBehaviour
         driverAnimator = driver.GetComponent<Animator>();
         driver.transform.position = driverBeginingPosition;
         InvokeRepeating("DoDialogue", startDelay, displayTime);
+        audioSource = GetComponent<AudioSource>();
+        audioSource.Play();
     }
 
     // Update is called once per frame
@@ -105,6 +108,7 @@ public class OutroScript : MonoBehaviour
         {
             ShowFinishButton();
             CancelInvoke();
+            InvokeRepeating("TurnDownMusic", 0, 0.5f);
         }
     }
 
@@ -122,7 +126,6 @@ public class OutroScript : MonoBehaviour
 
     public void EndGame()
     {
-        Debug.Log("Click!");
         SceneManager.LoadScene("Menu");
     }
 
@@ -131,6 +134,13 @@ public class OutroScript : MonoBehaviour
         if (Input.GetMouseButtonDown(0))
         {
             ShowFinishButton();
+        }
+    }
+    private void TurnDownMusic()
+    {
+        if(audioSource.volume != 0)
+        {
+            audioSource.volume -= 0.05f;
         }
     }
 

@@ -8,7 +8,7 @@ public class PlayerScript : MonoBehaviour
     private Vector3 vec;
     private ExplosionScript explosionScript;
     public float speed = 0.6f;
-    private int beginingNumberOfLifes = 5;
+    private int beginingNumberOfLifes = 5; //5
     private int lifes;
     private int lifesOnLastUpdate;
     float border = 4.5f;
@@ -17,6 +17,9 @@ public class PlayerScript : MonoBehaviour
     private bool isInRecoveryTime = false;
     private bool isDestroyed = false;
     private bool gameIsOver = false;
+    AudioSource audioSource;
+    [SerializeField] AudioClip getHurtAudio;
+    [SerializeField] AudioClip powerUpAudio;
 
 
     // Start is called before the first frame update
@@ -24,6 +27,7 @@ public class PlayerScript : MonoBehaviour
     {
         explosionScript = transform.GetChild(4).GetComponent<ExplosionScript>();
         PutOnStartPosition();
+        audioSource = GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -121,6 +125,7 @@ public class PlayerScript : MonoBehaviour
             lifes++;
             RunFireworks();
             Destroy(other.gameObject);
+            audioSource.PlayOneShot(powerUpAudio, 3);
         }
         else if (!isInRecoveryTime)
         {
@@ -130,6 +135,7 @@ public class PlayerScript : MonoBehaviour
                 lifes = 0;
             }
             Explode();
+            audioSource.PlayOneShot(getHurtAudio, 1);
             StartCoroutine(StartRecoveryTime());
         }
     }

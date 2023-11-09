@@ -23,6 +23,7 @@ public class IntroScript : MonoBehaviour
     float carSpeed = 5f;
     float borderToHideDriver = -0.5f;
     float carBorderToStartGame = 15f;
+    AudioSource audioSource;
 
 
     // Start is called before the first frame update
@@ -32,6 +33,7 @@ public class IntroScript : MonoBehaviour
         driver.transform.position = driverBeginingPosition;
         driverAnimator = driver.GetComponent<Animator>();
         InvokeRepeating("BuildText", startDelay, displayTime);
+        audioSource = GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -41,6 +43,7 @@ public class IntroScript : MonoBehaviour
         MoveDriver();
         HideDriverOnBorder();
         MoveCar();
+        TurnDownMusicIfNeeded();
         StartGameAfterIntro();
     }
 
@@ -124,6 +127,7 @@ public class IntroScript : MonoBehaviour
             Vector3 carVec = car.transform.position;
             carVec.z += Time.deltaTime * carSpeed;
             car.transform.position = carVec;
+
         }
     }
 
@@ -148,5 +152,12 @@ public class IntroScript : MonoBehaviour
         }
     }
 
+    private void TurnDownMusicIfNeeded()
+    {
+        if (car.transform.position.z > 0 && audioSource.volume != 0)
+        {
+            audioSource.volume -= 0.005f;
+        }
+    }
 
 }

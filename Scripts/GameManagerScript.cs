@@ -14,9 +14,9 @@ public class GameManagerScript : MonoBehaviour
     private PlayerScript playerScript;
     private GameInfoScript gameInfoScript;
     List<int> checkPoints = new List<int> {35, 70}; //35, 70
-    private int level = 1;
-    private int levelOnCheckpoint = 1;
-    private int levelSize = 5;
+    private int level = 1; //1
+    private int levelOnCheckpoint = 1; //1
+    private int levelSize = 5; //5
     private int maxLevelToIncreaseSpeed = 12; // 15 too hard
     private int currentCheckpoint = 0;
     [SerializeField] float speed;
@@ -26,6 +26,9 @@ public class GameManagerScript : MonoBehaviour
     private bool bossFightIsOver = false;
     private bool isSlowingDownStarted = false;
     private bool hasJustStarted;
+    AudioSource audioSource;
+    [SerializeField] AudioClip checkpointAudio;
+
 
     // Start is called before the first frame update
     void Start()
@@ -36,6 +39,8 @@ public class GameManagerScript : MonoBehaviour
         playerScript = player.GetComponent<PlayerScript>();
         gameInfoScript = GetComponent<GameInfoScript>();
         hasJustStarted = true;
+        audioSource = GetComponent<AudioSource>();
+        audioSource.Play();
     }
 
     // Update is called once per frame
@@ -96,7 +101,9 @@ public class GameManagerScript : MonoBehaviour
             isSlowingDownStarted = true;
             InvokeRepeating("ReduceSpeed", 10, 0.3f);
             gameInfoScript.ShowMainInfoWithText("YOU DID IT!");
+            audioSource.PlayOneShot(checkpointAudio, 1);
             StartCoroutine(StartFinalAnimationAfterSeconds(7));
+            InvokeRepeating("TurnDownMusic", 1.5f, 0.5f);
         }
     }
 
@@ -151,12 +158,13 @@ public class GameManagerScript : MonoBehaviour
     private void SetCheckpoint()
     {
         foreach (int checkPoint in checkPoints) {
-            if (checkPoint == spawnManagerScript.SpawnCounter && !hasJustStarted)
+            if (checkPoint == spawnManagerScript.SpawnCounter && !hasJustStarted && checkPoint != currentCheckpoint)
             {
                 levelOnCheckpoint = level;
                 speedOnCheckpoint = speed;
                 currentCheckpoint = checkPoint;
                 gameInfoScript.ShowMainInfoWithText("CHECKPOINT!");
+                audioSource.PlayOneShot(checkpointAudio, 1);
             }
         }
     }
@@ -170,6 +178,14 @@ public class GameManagerScript : MonoBehaviour
     {
         yield return new WaitForSeconds(seconds);
         SceneManager.LoadScene("Outro");
+    }
+
+    private void TurnDownMusic()
+    {
+        if (audioSource.volume != 0)
+        {
+            audioSource.volume -= 0.05f;
+        }
     }
 
 }

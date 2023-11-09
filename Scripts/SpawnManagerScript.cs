@@ -15,7 +15,7 @@ public class SpawnManagerScript : MonoBehaviour
     private System.Random rnd = new System.Random();
     private float startDelay = 3; //2 was too fast
     private float repeatRate = 2.2f; //1.5 for abstract prototype, 2.8 bit boring, 2.2 quite chalanging
-    private int spawnCounter = 0;
+    private int spawnCounter = 0; //0
     private int lastLevel = 1;
     private int noPowerUpBeginingLimit = 9; // 20 - try with 9 now
     private int howManyObstaclesForPowerUp = 9; //10  - try with 9 now
